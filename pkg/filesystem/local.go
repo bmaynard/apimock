@@ -45,7 +45,7 @@ func (o *LocalFileOptions) GetMocks() []FileMock {
 
 	for _, folder := range folders {
 		var files []string
-		rootPath := fmt.Sprintf("%s/%s", o.Path, folder.Name())
+		rootPath := filepath.Join(o.Path, folder.Name())
 		err := filepath.Walk(rootPath, visit(&files))
 
 		if err != nil {
@@ -99,8 +99,8 @@ func (o *LocalFileOptions) WriteMockFile(r *http.Response, bodyBytes []byte, ori
 
 	requestPath := r.Request.URL.EscapedPath()
 	requestPath = strings.Replace(requestPath, "/", "_", -1)
-	folderName := fmt.Sprintf("%s/%s", o.Path, originalHost)
-	fileName := fmt.Sprintf("%s/%s_%s.json", folderName, requestPath, hex.EncodeToString(h.Sum(nil)))
+	folderName := filepath.Join(o.Path, originalHost)
+	fileName := filepath.Join(folderName, fmt.Sprintf("%s_%s.json", requestPath, hex.EncodeToString(h.Sum(nil))))
 
 	if _, err := os.Stat(folderName); os.IsNotExist(err) {
 		os.Mkdir(folderName, 0700)

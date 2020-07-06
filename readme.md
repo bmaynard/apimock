@@ -1,6 +1,6 @@
 # APIMock
 
-APIMock allows you serve fake REST API requests for any requests your application needs a mock for. It can work with any programming language and can run the in background intercepting your applications REST API requests. APIMock can also run a proxy server that record any API requests your application makes and then create a mock file for you!
+APIMock allows you to serve fake REST API requests for your application so you are able to test your API requests. It works with any programming language as it runs a HTTP(S) server and with domain support, allows for zero configuration changes to your application. APIMock can also run a proxy server that will record any API requests your application makes and then creates a mock file for you!
 
 # Table of Contents
 
@@ -8,7 +8,8 @@ APIMock allows you serve fake REST API requests for any requests your applicatio
 - [Getting Started](#Getting-Started)
   - [Mock Server](#Mock-Server)
   - [Proxy Server](#Proxy-Server)
- - [Configuration File](#Configuration-File)
+    - [Kubernetes Sidecar Proxy](#Kubernetes-Sidecar-Proxy)
+  - [Configuration File](#Configuration-File)
 - [Writing your own mocks](#Writing-your-own-mocks)
   - [Sample](#Sample)
 - [Roadmap](#Roadmap)
@@ -17,9 +18,9 @@ APIMock allows you serve fake REST API requests for any requests your applicatio
 
 - HTTP(S) server that listens for requests and returns the mock response.
 - Domain support, separate your mocks by domain so you don't have to change any configuration to your code.
-- Can run on any operating system.
+- Can run on Windows/Mac/Linux.
 - Proxy server to record your applications REST API requests so you don't have to write any mocks.
-- Kubernetes support. Run the proxy as a sidecar to record API requests
+- Kubernetes support. Run the proxy as a sidecar to record API requests.
 
 ## Getting Started
 
@@ -55,9 +56,9 @@ Global Flags:
 
 ### Proxy Server
 
-You can run a proxy server to intercept your API request which will record the responses and save the response as mock so you don't have to write any mocks yourself. Currently only HTTP traffic is supported to record the response but the proxy will proxy your TLS requests.
+You can run a proxy server to intercept your API requests which will record and save the responses as mock so you don't have to write any mocks yourself. Currently only HTTP traffic is supported to record the response but the server will proxy your TLS requests.
 
-When the proxy captures a HTTP request, it will create the mock file in the mocks directory under a folder of the domain name for that request. The proxy will create a MD5 hash of the response so while you can have different responses for the same request, it will only create one file per response content. You can also run the proxy under a Kubernetes mode that acts as sidecar proxy which in this scenario, will re-write all requests to application pod using `localhost`.
+When the proxy captures a HTTP request, it will create the mock file in the mocks directory under a folder of the domain name for that request. The proxy will create a MD5 hash of the response so while you can have different responses for the same request, it will only create one file per response content. You can also run the proxy under a Kubernetes mode that acts as sidecar proxy which in this scenario, will re-write all requests to the application pod using `localhost`. See [Kubernetes Sidecar Proxy](#Kubernetes-Sidecar-Proxy) for more information.
 
 ```bash
 $ apimock proxy
@@ -85,7 +86,7 @@ Global Flags:
 
 #### Kubernetes Sidecar Proxy
 
-To run the proxy as a sidecar in your Kubernetes deployment, you can use the [bmaynard/apimock-proxy-kubernetes](https://hub.docker.com/r/bmaynard/apimock-proxy-kubernetes) docker image. You can change `SERVICE_HOST_NAME` to the name of your service so it saves the mocks under the correct domain name for the service, otherwise it will save them in `localhost`. You can then use `kubectl cp pod-name:/app/mocks/ mocks/ -c sidecar-proxy` command to copy the mocks to your local filesystem.
+To run the proxy as a sidecar in your Kubernetes deployment, you can use the [bmaynard/apimock-proxy-kubernetes](https://hub.docker.com/r/bmaynard/apimock-proxy-kubernetes) docker image. You can change `SERVICE_HOST_NAME` to the name of your service so it saves the mocks under the correct domain name for the service, otherwise it will save them in the `localhost` folder. You can then use `kubectl cp pod-name:/app/mocks/ mocks/ -c sidecar-proxy` command to copy the mocks to your local filesystem.
 
 ```yaml
 ...
@@ -119,7 +120,7 @@ filesystem:
 
 ## Writing your own mocks
 
-To write your own mocks, you will need to create a base directory that will hold all the different domains your API mocks will be served from. You can also create a directory called `_all_` which those mocks will be served under any domain name. A sample directory structure might look like:
+To write your own mocks, you will need to create a base directory that will hold all the different domains your API requests will be served from. You can also create a directory called `_all_` which those mocks will be served under any domain name. A sample directory structure might look like:
 
 ```
 mocks
