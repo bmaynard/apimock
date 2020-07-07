@@ -29,17 +29,17 @@ You can download the latest release from [Releases](https://github.com/bmaynard/
 
 ## Getting Started
 
-By default, the application will look for a `./mocks` directory in the current directory you are in. You can also create your mocks directory elsewhere and specify the path through the configuration file. The API mock server has the ability to serve different requests depending on the domain being requested so you have the ability to have different mocks for different services that have the same path. See [Writing your own mocks](#Writing-your-own-mocks) for more information. 
+By default, the application will look for a `mocks` folder in the current directory you are in. You can also create your mocks directory elsewhere and specify the path through the configuration file. The API mock server has the ability to serve different mocks depending on the domain being requested so you can have different mocks for different services that have the same path. See [Writing your own mocks](#Writing-your-own-mocks) for more information. 
 
 ### Mock Server
 
-To start the mock server to serve your API mocks, run:
+To start the mock server to serve your API requests, run:
 
 ```bash
 $ apimock server
 ```
 
-You can also specify different configuration options to change the listen address or run the server under TLS. For full list of configuration options, see the `help` command.
+You can also specify different configuration options to change the listen address or run the server under TLS. For a full list of configuration options, see the `help` command.
 
 ```
 $ apimock server --help
@@ -63,13 +63,13 @@ Global Flags:
 
 You can run a proxy server to intercept your API requests which will record and save the responses as mock so you don't have to write any mocks yourself. Currently only HTTP traffic is supported to record the response but the server will proxy your TLS requests.
 
-When the proxy captures a HTTP request, it will create the mock file in the mocks directory under a folder of the domain name for that request. The proxy will create a MD5 hash of the response so while you can have different responses for the same request, it will only create one file per response content. You can also run the proxy under a Kubernetes mode that acts as sidecar proxy which in this scenario, will re-write all requests to the application pod using `localhost`. See [Kubernetes Sidecar Proxy](#Kubernetes-Sidecar-Proxy) for more information.
+When the proxy captures a HTTP request, it will create a file in the mocks directory under the domain name folder for that request. The proxy will create a MD5 hash of the response so while you can have different responses for the same request, it will only create one file per response content. You can also run the proxy under a Kubernetes mode that acts as sidecar proxy which in this scenario, will rewrite all requests to the application pod using `localhost`. See [Kubernetes Sidecar Proxy](#Kubernetes-Sidecar-Proxy) for more information.
 
 ```bash
 $ apimock proxy
 ```
 
-You can also specify different configuration options to change the listen address or run the proxy under TLS. For full list of configuration options, see the `help` command.
+You can also specify different configuration options to change the listen address or run the proxy under TLS. For a full list of configuration options, see the `help` command.
 
 ```
 $ apimock proxy --help
@@ -140,6 +140,8 @@ mocks
     └── user_1.json
 ```
 
+If you have multiple mocks with the same path under the domain name, then the mock server will randomly respond with a request.
+
 A DNS record has been created for `*.apimock.benmaynard.dev` that points to `127.0.0.1` so you can request mocks for different domains on your local machine. **Note:** You will not be able to request the API mock through a browser under the .dev domain unless you use a valid SSL certificate (See: https://get.dev/)
 
 A mock contains two top level sections, `response` and `meta`. The `response` key is the JSON you wish to return and `meta` contains information about the request e.g. the `status_code`, `request_path` and `method`. In the request path, you can use variables in the path so you don't have to create a mock for every possible request. The application is built on top of [gorilla/mux](https://github.com/gorilla/mux), see [https://github.com/gorilla/mux#registered-urls](https://github.com/gorilla/mux#registered-urls) for more information.
@@ -181,3 +183,4 @@ A mock contains two top level sections, `response` and `meta`. The `response` ke
 - [ ] Add delay to responses
 - [ ] CORS configuration
 - [ ] Ability to specify customer headers
+- [ ] Sample rate to record proxy requests
