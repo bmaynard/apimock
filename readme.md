@@ -4,6 +4,7 @@ APIMock allows you to serve fake REST API requests for your application so you a
 
 # Table of Contents
 
+- [Installation](#Installation)
 - [Features](#Features)
 - [Getting Started](#Getting-Started)
   - [Mock Server](#Mock-Server)
@@ -13,6 +14,10 @@ APIMock allows you to serve fake REST API requests for your application so you a
 - [Writing your own mocks](#Writing-your-own-mocks)
   - [Sample](#Sample)
 - [Roadmap](#Roadmap)
+
+## Installation
+
+You can download the latest release from [Releases](https://github.com/bmaynard/apimock/releases).
 
 ## Features
 
