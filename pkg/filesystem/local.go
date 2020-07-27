@@ -20,7 +20,7 @@ type LocalFileOptions struct {
 	Path string
 }
 
-func NewLoclFileOptions() *LocalFileOptions {
+func NewLocalFileOptions() *LocalFileOptions {
 	return &LocalFileOptions{
 		Path: "",
 	}
@@ -92,7 +92,11 @@ func (o *LocalFileOptions) WriteMockFile(r *http.Response, bodyBytes []byte, ori
 		return err
 	}
 
-	file, _ := json.MarshalIndent(mock, "", " ")
+	file, err := json.MarshalIndent(mock, "", " ")
+
+	if err != nil {
+		return err
+	}
 
 	h := md5.New()
 	h.Write(file)
@@ -106,7 +110,7 @@ func (o *LocalFileOptions) WriteMockFile(r *http.Response, bodyBytes []byte, ori
 		os.Mkdir(folderName, 0700)
 	}
 
-	err := ioutil.WriteFile(fileName, file, 0644)
+	err = ioutil.WriteFile(fileName, file, 0644)
 
 	if err == nil {
 		l.Log.Infof("Saved mock file to %s", fileName)

@@ -111,9 +111,9 @@ To run the proxy as a sidecar in your Kubernetes deployment, you can use the [bm
 
 ### Configuration File
 
-The application will look for a `.apimock.yaml` in your home directory and will load the file if it exists. Currently, you are able to supply the path to your mocks directory. Future enhancements will include being able to store your mock files in S3.
+The application will look for a `.apimock.yaml` in your home directory and will load the file if it exists. Currently, you are able to choose between storing the mock files on your local filesystem or in S3.
 
-**Sample:**
+**Local Filesystem:**
 
 ```yaml
 ---
@@ -122,6 +122,20 @@ filesystem:
   meta:
     mock_path: "/path/to/your/mocks/directory"
 ```
+
+**S3 Filesystem:**
+
+```yaml
+---
+filesystem:
+  adapter: s3
+  meta:
+    bucket: *bucket-name* # Required
+    region: *region* # Required
+    prefix: mocks # Optional
+```
+
+*Note*: Using the S3 filesystem, the application expects credentials to be already present on the machine using either the credentials file, environment variables or IAM Roles.
 
 ## Writing your own mocks
 
@@ -172,7 +186,7 @@ A mock contains two top level sections, `response` and `meta`. The `response` ke
 
 ## Roadmap
 
-- [ ] S3 Support
+- [*] S3 Support
 - [ ] Generate Host files
 - [ ] Live reloading of mock files
 - [ ] Request Input Matching
