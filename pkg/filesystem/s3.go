@@ -46,9 +46,7 @@ func (o *S3FileOptions) SetOptionString(key string, value string) {
 func (o *S3FileOptions) GetMocks() []FileMock {
 	var fileMocks []FileMock
 
-	sess, err := session.NewSession(&aws.Config{
-		Region: aws.String(o.Region)},
-	)
+	sess, err := o.getS3Session()
 
 	if err != nil {
 		l.Log.Fatal(err)
@@ -104,7 +102,6 @@ func (o *S3FileOptions) GetMocks() []FileMock {
 			Contents: file,
 		})
 		l.Log.Debugf("Added %s to potential mocks list", *object.Key)
-
 	}
 
 	return fileMocks
@@ -153,12 +150,15 @@ func (o *S3FileOptions) WriteMockFile(r *http.Response, bodyBytes []byte, origin
 		return err
 	}
 
-	sess, err := session.NewSession(&aws.Config{
-		Region: aws.String(o.Region)},
-	)
+	sess, err := o.getS3Session()
+
+	if err != nil {
+		return err
+	}
 
 	uploader := s3manager.NewUploader(sess)
 	f, err := os.Open(fileName)
+
 	if err != nil {
 		return err
 	}
@@ -176,4 +176,10 @@ func (o *S3FileOptions) WriteMockFile(r *http.Response, bodyBytes []byte, origin
 	}
 
 	return err
+}
+
+func (o *S3FileOptions) getS3Session() (*session.Session, error) {
+	return session.NewSession(&aws.Config{
+		Region: aws.String(o.Region)},
+	)
 }
