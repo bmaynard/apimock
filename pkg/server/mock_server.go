@@ -5,6 +5,7 @@ import (
 	"net/http"
 	"os"
 	"os/signal"
+	"strconv"
 	"time"
 
 	"github.com/gorilla/mux"
@@ -22,6 +23,7 @@ func Serve(wait time.Duration, addr string, pemPath string, keyPath string) {
 
 	r := mux.NewRouter().StrictSlash(true)
 	responses.BuildRoutes(r)
+	r.Use(delayMiddleware)
 
 	srv := &http.Server{
 		Handler:      r,
@@ -56,4 +58,17 @@ func Serve(wait time.Duration, addr string, pemPath string, keyPath string) {
 	srv.Shutdown(ctx)
 	l.Log.Info("shutting down")
 	os.Exit(0)
+}
+
+func delayMiddleware(next http.Handler) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		d, err := strconv.ParseFloat(r.URL.Query().Get("delay"), 64)
+		if err == nil {
+			if d > 300 { // Max delay of 5 minutes
+				d = 300
+			}
+			time.Sleep(time.Duration(d*1000) * time.Millisecond)
+		}
+		next.ServeHTTP(w, r)
+	})
 }
