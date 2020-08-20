@@ -186,7 +186,7 @@ A mock contains two top level sections, `response` and `meta`. The `response` ke
 
 ## Roadmap
 
-- [*] S3 Support
+- [x] S3 Support
 - [ ] Generate Host files
 - [ ] Live reloading of mock files
 - [ ] Request Input Matching
@@ -194,7 +194,7 @@ A mock contains two top level sections, `response` and `meta`. The `response` ke
 - [ ] gRPC Support
 - [ ] XML/Other media types Support
 - [ ] Generate Kubernetes YAML files
-- [ ] Add delay to responses
+- [x] Add delay to responses
 - [ ] CORS configuration
 - [ ] Ability to specify customer headers
 - [ ] Sample rate to record proxy requests
