@@ -1,0 +1,19 @@
+{
+    "response": {
+        "articles": [
+            {
+                "id": 1,
+                "title": "this is a test"
+            },
+            {
+                "id": 2,
+                "title": "this is a test two"
+            }
+        ]
+    },
+    "meta": {
+        "status_code": 200,
+        "request_path": "/articles",
+        "method": "GET"
+    }
+}
