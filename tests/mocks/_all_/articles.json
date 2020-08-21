@@ -1,0 +1,11 @@
+{
+    "response": {
+        "id": 1,
+        "title": "this is a test"
+    },
+    "meta": {
+        "status_code": 200,
+        "request_path": "/articles/{id}",
+        "method": "GET"
+    }
+}
